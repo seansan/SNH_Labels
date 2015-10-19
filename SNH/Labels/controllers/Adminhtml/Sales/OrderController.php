@@ -67,13 +67,13 @@ foreach($temp as $addy){
   $i++;
 }
 $page = $pdf->newPage('286:153:');
-$fontsize = 16; $margin = 12;
+$fontsize = 16; $margin = 12; $linespacing = 4;
 $page->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), $fontsize);
 $i = 153;
 $ctn = 1; 
 foreach($temp2 as $addy){
   if (empty(trim($addy))) { continue; }
-  $i = $i- $margin - $fontsize; // only move to next line if not only address
+  $i = $i- $linespacing - $fontsize; // only move to next line if not only address
   $page->drawText(trim(strtoupper(trim($addy))), $margin, $i, 'UTF-8');	
   $ctn++;
 }
