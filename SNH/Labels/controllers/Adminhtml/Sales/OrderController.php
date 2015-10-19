@@ -67,7 +67,7 @@ foreach($temp as $addy){
   $i++;
 }
 $page = $pdf->newPage('286:153:');
-$fontsize = 16; $margin = 12; $linespacing = 4;
+$fontsize = 16; $margin = 12; $linespacing = 8;
 $page->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), $fontsize);
 $i = 153;
 $ctn = 1; 
