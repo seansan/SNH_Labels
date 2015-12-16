@@ -19,6 +19,23 @@ private function array_mpop($array, $iterate) {
   return $array;
 } 
 
+private function get_returnstr() {
+	$str1   = Mage::getStoreConfig('shipping/origin/street_line1') . '';
+	$str2   = Mage::getStoreConfig('shipping/origin/street_line2');
+	$reg    = Mage::getStoreConfig('shipping/origin/region_id');
+	$pc     = Mage::getStoreConfig('shipping/origin/postcode');
+	$city   = Mage::getStoreConfig('shipping/origin/city');
+	$country= Mage::getStoreConfig('shipping/origin/country_id');
+
+	if (preg_match("/^[0-9]+-?[hHsIivV]{0,4}$/i", trim($str2))) {
+	  $str1 = $str1 . ' ' . $str2;
+	  $str2 = '';
+	 }
+
+	return implode(' ', array_filter([$str1,$str2,$pc,$city,$reg,$country]));
+
+}
+
 public function pdfprintlabelsAction() {
     $request = $this->getRequest();
 
@@ -58,13 +75,45 @@ foreach($pdfarray as $pdfarr):
 $temp = $this->array_mpop($pdfarr["addr"], 2);	
 $temp2 = array();
 $i=0;
+
+$search_replace = array(
+    "straat" => "str",
+    "laan" => "ln",
+    "wethouder" => "wth",
+    "burgemeester" => "brgm",
+    "van" => "v",
+    "weg" => "w",
+    "van der" => "v/d",
+    "van de" => "v/d",
+    "plantsoen" => "plsn",
+    "eerste" => "1e",
+    "tweede" => "2e",
+    "derde" => "3e",
+    "veld" => "v",
+    "boulevard" => "blvd",
+    "van van" => "v/v",
+    "aan den" => "a/d",
+    "nauwe" => "nw",
+    "bahnhof" => "bhnf",
+    "ministerie" => "min.",
+    "plaat" => "plt",
+    "alexander" => "alex.",
+    "kade" => "kd",
+    "nieuwe" => "nw",
+    "prinses" => "prs",
+    "prins" => "pr."
+);
+
 foreach($temp as $addy){
-  if ($i != 0 && preg_match("/^[0-9]+-?[hHsIivV]{0,4}$/i", trim($addy))) {
-    $temp2[$i-1] = $temp2[$i-1] . ' ' . trim($addy);
-  } else {
-    $temp2[$i] = trim($addy);
-  }
-  $i++;
+	if (in_array($i, array(0, 1)) && (strlen(trim($addy)) > 20)) {
+		$addy = trim(str_ireplace(array_keys($search_replace),array_values($search_replace), $addy));
+	}
+	if ($i != 0 && preg_match("/^[0-9]+-?[hHsIivV]{0,4}$/i", trim($addy))) {
+		$temp2[$i-1] = $temp2[$i-1] . ' ' . trim($addy);
+	} else {
+		$temp2[$i] = trim($addy);
+	}
+	$i++;
 }
 $page = $pdf->newPage('286:153:');
 $fontsize = 16; $margin = 12; $linespacing = 8;
@@ -77,6 +126,12 @@ foreach($temp2 as $addy){
   $page->drawText(trim(strtoupper(trim($addy))), $margin, $i, 'UTF-8');	
   $ctn++;
 }
+
+$fontsize = 8; 
+$ret = 'Return: ' .$this->get_returnstr();
+$page->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), $fontsize);
+$page->drawText(trim(strtoupper(trim($ret))), $margin, ($fontsize/2), 'UTF-8');
+
 $pdf->pages[] = $page;
 
 endforeach;
