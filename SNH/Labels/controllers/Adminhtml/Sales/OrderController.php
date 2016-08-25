@@ -20,6 +20,8 @@ private function array_mpop($array, $iterate) {
 } 
 
 private function get_returnstr() {
+	general_store_information_name
+	$store  = Mage::getStoreConfig('general/store_information/name');
 	$str1   = Mage::getStoreConfig('shipping/origin/street_line1') . '';
 	$str2   = Mage::getStoreConfig('shipping/origin/street_line2');
 	$reg    = Mage::getStoreConfig('shipping/origin/region_id');
@@ -32,7 +34,7 @@ private function get_returnstr() {
 	  $str2 = '';
 	 }
 
-	return implode(' ', array_filter([$str1,$str2,$pc,$city,$reg,$country]));
+	return implode(' ', array_filter([$store,$str1,$str2,$pc,$city,$reg,$country]));
 
 }
 
