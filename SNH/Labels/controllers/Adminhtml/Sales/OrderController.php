@@ -20,14 +20,15 @@ private function array_mpop($array, $iterate) {
 } 
 
 private function get_returnstr() {
-	general_store_information_name
-	$store  = Mage::getStoreConfig('general/store_information/name');
-	$str1   = Mage::getStoreConfig('shipping/origin/street_line1') . '';
-	$str2   = Mage::getStoreConfig('shipping/origin/street_line2');
-	$reg    = Mage::getStoreConfig('shipping/origin/region_id');
-	$pc     = Mage::getStoreConfig('shipping/origin/postcode');
-	$city   = Mage::getStoreConfig('shipping/origin/city');
-	$country= Mage::getStoreConfig('shipping/origin/country_id');
+	
+	$store_id = Mage::app()->getStore()->getStoreId();
+	$store  = Mage::getStoreConfig('general/store_information/name', $store_id);
+	$str1   = Mage::getStoreConfig('shipping/origin/street_line1', $store_id) . '';
+	$str2   = Mage::getStoreConfig('shipping/origin/street_line2', $store_id);
+	$reg    = Mage::getStoreConfig('shipping/origin/region_id', $store_id);
+	$pc     = Mage::getStoreConfig('shipping/origin/postcode', $store_id);
+	$city   = Mage::getStoreConfig('shipping/origin/city', $store_id);
+	$country= Mage::getStoreConfig('shipping/origin/country_id', $store_id);
 
 	if (preg_match("/^[0-9]+-?[hHsIivV]{0,4}$/i", trim($str2))) {
 	  $str1 = $str1 . ' ' . $str2;
