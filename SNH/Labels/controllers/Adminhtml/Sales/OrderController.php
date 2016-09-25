@@ -24,7 +24,7 @@ private function get_returnstr() {
 	$store_id = Mage::app()->getStore()->getStoreId();
 	$store  = Mage::getStoreConfig('general/store_information/name', $store_id);
 	$str1   = Mage::getStoreConfig('shipping/origin/street_line1', $store_id) . '';
-	$str2   = Mage::getStoreConfig('shipping/origin/street_line2', $store_id);
+	$str2   = Mage::getStoreConfig('shipping/origin/street_line2', $store_id) . '';
 	$reg    = Mage::getStoreConfig('shipping/origin/region_id', $store_id);
 	$pc     = Mage::getStoreConfig('shipping/origin/postcode', $store_id);
 	$city   = Mage::getStoreConfig('shipping/origin/city', $store_id);
@@ -104,6 +104,7 @@ $search_replace = array(
     "kade" => "kd",
     "nieuwe" => "nw",
     "prinses" => "prs",
+    "hof" => "hf",
     "prins" => "pr."
 );
 
@@ -118,11 +119,13 @@ foreach($temp as $addy){
 	}
 	$i++;
 }
+	
 $page = $pdf->newPage('286:153:');
 $fontsize = 16; $margin = 12; $linespacing = 8;
 $page->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), $fontsize);
 $i = 153;
 $ctn = 1; 
+if ($temp2[3] == $temp2[4]) { unset($temp2[4]); }
 foreach($temp2 as $addy){
   if (empty(trim($addy))) { continue; }
   $i = $i- $linespacing - $fontsize; // only move to next line if not only address
